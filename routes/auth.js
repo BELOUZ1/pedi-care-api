@@ -6,16 +6,17 @@ const jwt = require("jsonwebtoken");
 
 authRouter.post('/signup', async (req, res, next) => {
 
-    delete req.body._id;
-    const user = new User({
-        ...req.body
-    });
-
     try {
+        delete req.body._id;
+
+        const user = new User({
+            ...req.body
+        });
+
         const userExist = await User.findOne({ email: req.body.email });
         if (userExist) return res.status(201).json({ message: "Utilisateur " + req.body.email + " existe déjà" });
-
         await user.save();
+
         res.status(200).json({ message: "Utilisateur " + req.body.email + " ajouté" })
 
     } catch (e) {
@@ -39,7 +40,6 @@ authRouter.post("/login", async function (req, res) {
         res.status(200).json(user);
 
     } catch (error) {
-        console.log(error);
         res.status(503).json(error);
     }
 });
